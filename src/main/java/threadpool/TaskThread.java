@@ -10,13 +10,9 @@ public class TaskThread extends Thread {
 
     @Override
     public void run() {
-        for (;;) {
+        for (; ; ) {
             Runnable task = taskQueue.getTask();
-            try {
-                task.run();
-            } finally {
-                System.out.print(currentThread().getName() + "runs : ");
-            }
+            task.run();
         }
     }
 }

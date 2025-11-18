@@ -10,28 +10,26 @@ class ThreadPoolTest {
 
     @Test
     void threadPoolCreated() {
-        ThreadPool threadPool = new ThreadPool(10, new TaskQueue());
+        ThreadPool threadPool = new ThreadPool(10);
 
         assertEquals(10, threadPool.size());
     }
 
     @Test
     void threadPoolTaskExecuted() {
-        TaskQueue taskQueue = new TaskQueue();
-        ThreadPool threadPool = new ThreadPool(1, taskQueue);
-
+        ThreadPool threadPool = new ThreadPool(1);
         AtomicInteger executionCount = new AtomicInteger(0);
 
-        taskQueue.putTask(executionCount::incrementAndGet);
-
-        threadPool.run();
+        threadPool.run(executionCount::incrementAndGet);
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
         assertEquals(1, executionCount.get(), "Task should be executed once");
     }
+
 }
+
