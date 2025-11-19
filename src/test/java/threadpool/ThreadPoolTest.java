@@ -31,5 +31,63 @@ class ThreadPoolTest {
         assertEquals(1, executionCount.get(), "Task should be executed once");
     }
 
+    @Test
+    void threadPoolReuseThreads() throws InterruptedException {
+        // 쓰레드 풀 크기가 2일 때, 5개의 작업을 실행하면 쓰레드가 재사용되어야 함
+        ThreadPool threadPool = new ThreadPool(2);
+        AtomicInteger completedTasks = new AtomicInteger(0);
+        AtomicInteger maxConcurrentTasks = new AtomicInteger(0);
+        AtomicInteger currentConcurrentTasks = new AtomicInteger(0);
+
+        int totalTasks = 5;
+
+        for (int i = 0; i < totalTasks; i++) {
+            threadPool.run(() -> {
+                int current = currentConcurrentTasks.incrementAndGet();
+
+                // 최대 동시 실행 작업 수 추적
+                maxConcurrentTasks.updateAndGet(max -> Math.max(max, current));
+
+                try {
+                    Thread.sleep(50); // 작업 시뮬레이션
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                currentConcurrentTasks.decrementAndGet();
+                completedTasks.incrementAndGet();
+            });
+        }
+
+        // 모든 작업이 완료될 때까지 대기
+        Thread.sleep(500);
+
+        assertEquals(totalTasks, completedTasks.get(), "All tasks should be completed");
+        assertEquals(2, maxConcurrentTasks.get(), "Max concurrent tasks should not exceed pool size");
+    }
+
+    @Test
+    void threadPoolSize() throws InterruptedException {
+        // 쓰레드 풀의 크기가 유지되는지 확인
+        ThreadPool threadPool = new ThreadPool(3);
+
+        assertEquals(3, threadPool.size(), "Thread pool size should be 3");
+
+        // 여러 작업 실행 후에도 풀 크기가 유지되는지 확인
+        for (int i = 0; i < 10; i++) {
+            threadPool.run(() -> {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+        Thread.sleep(200);
+
+        assertEquals(3, threadPool.size(), "Thread pool size should remain 3 after executing tasks");
+    }
+
 }
 
