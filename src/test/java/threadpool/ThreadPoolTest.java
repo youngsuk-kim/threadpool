@@ -63,6 +63,7 @@ class ThreadPoolTest {
         Thread.sleep(500);
 
         assertEquals(totalTasks, completedTasks.get(), "All tasks should be completed");
+        // 재사용 하기 때문에, 쓰레드 수가 Task 수를 초과하면 안됨
         assertEquals(2, maxConcurrentTasks.get(), "Max concurrent tasks should not exceed pool size");
     }
 
