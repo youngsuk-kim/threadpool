@@ -49,7 +49,11 @@ class ThreadPoolTest {
                 maxConcurrentTasks.updateAndGet(max -> Math.max(max, current));
 
                 try {
-                    Thread.sleep(50); // 작업 시뮬레이션
+                    /*
+                    Thread sleep을 통해 바로 전 코드가 동시에 실행되도록 함,
+                    코드를 실행하는 쓰레드를 강제로 여러개 만듬 thread sleep 했을때 -> B 쓰레드 실행 -> C 쓰레드 실행
+                     */
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
