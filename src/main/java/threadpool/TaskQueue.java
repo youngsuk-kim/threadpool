@@ -25,4 +25,8 @@ public class TaskQueue {
             return null;
         }
     }
+
+    public int size() {
+        return this.tasks.size();
+    }
 }
