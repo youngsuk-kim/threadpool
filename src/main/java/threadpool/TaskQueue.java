@@ -3,6 +3,8 @@ package threadpool;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static java.lang.Thread.currentThread;
+
 public class TaskQueue {
     BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>();
 
@@ -18,8 +20,9 @@ public class TaskQueue {
         try {
             return this.tasks.take();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            // 명시 목적 호출
+            currentThread().interrupt();
+            return null;
         }
     }
-
 }

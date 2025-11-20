@@ -2,6 +2,9 @@ package threadpool;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ThreadPool {
 
@@ -26,6 +29,14 @@ public class ThreadPool {
         return this.threads.size();
     }
 
+    public void shutdownNow() {
+        this.threads.forEach(Thread::interrupt);
+    }
+
+    public static void main(String[] args) {
+        ThreadPool threadPool = new ThreadPool(10);
+        threadPool.shutdownNow();
+    }
 }
 
 
