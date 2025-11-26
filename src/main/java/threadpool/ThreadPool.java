@@ -59,17 +59,14 @@ public class ThreadPool {
     }
 
     private boolean tryAddThreadIfBelowLimit(int limit, Runnable runnable) {
-        // Double-Checked Locking - 락 조건에 맞을때만 적용
-        if (threads.size() < limit) {
-            lock.lock();
-            try {
-                if (threads.size() < limit) {
-                    createAndStartThread(runnable);
-                    return true;
-                }
-            } finally {
-                lock.unlock();
+        lock.lock();
+        try {
+            if (threads.size() < limit) {
+                createAndStartThread(runnable);
+                return true;
             }
+        } finally {
+            lock.unlock();
         }
         return false;
     }
